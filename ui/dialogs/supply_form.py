@@ -126,11 +126,14 @@ class SupplyFormDialog(tk.Toplevel):
             raw = self._vars[attr].get().strip()
             if wtype == 'num':
                 try:
-                    kwargs[attr] = float(raw) if '.' in raw else int(raw) if raw else (
-                        None if attr in ('initial_weight', 'remaining_weight') else 0
-                    )
+                    if not raw:
+                        kwargs[attr] = None if attr in ('initial_weight', 'remaining_weight') else 1
+                    elif attr == 'quantity':
+                        kwargs[attr] = int(raw)
+                    else:
+                        kwargs[attr] = float(raw) if '.' in raw else int(raw)
                 except ValueError:
-                    kwargs[attr] = None
+                    kwargs[attr] = raw if attr == 'quantity' else None
             else:
                 kwargs[attr] = raw or None if attr in (
                     'lot', 'location', 'best_before', 'analysis_applications') else raw
