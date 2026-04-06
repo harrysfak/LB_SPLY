@@ -54,12 +54,24 @@ class Supply:
             errors.append(f'Μη έγκυρος τύπος: {self.type!r}')
         if self.status not in STATUSES:
             errors.append(f'Μη έγκυρη κατάσταση: {self.status!r}')
-        if self.quantity < 0:
+        if not isinstance(self.quantity, (int, float)):
+            errors.append('Η ποσότητα πρέπει να είναι αριθμός.')
+        elif int(self.quantity) != self.quantity:
+            errors.append('Η ποσότητα πρέπει να είναι ακέραιος αριθμός.')
+        elif self.quantity < 0:
             errors.append('Η ποσότητα δεν μπορεί να είναι αρνητική.')
-        if self.remaining_weight is not None and self.remaining_weight < 0:
-            errors.append('Το υπόλοιπο βάρος δεν μπορεί να είναι αρνητικό.')
-        if self.initial_weight is not None and self.initial_weight < 0:
-            errors.append('Το αρχικό βάρος δεν μπορεί να είναι αρνητικό.')
+
+        if self.remaining_weight is not None:
+            if not isinstance(self.remaining_weight, (int, float)):
+                errors.append('Το υπόλοιπο βάρος πρέπει να είναι αριθμός.')
+            elif self.remaining_weight < 0:
+                errors.append('Το υπόλοιπο βάρος δεν μπορεί να είναι αρνητικό.')
+
+        if self.initial_weight is not None:
+            if not isinstance(self.initial_weight, (int, float)):
+                errors.append('Το αρχικό βάρος πρέπει να είναι αριθμός.')
+            elif self.initial_weight < 0:
+                errors.append('Το αρχικό βάρος δεν μπορεί να είναι αρνητικό.')
         if self.best_before:
             try:
                 date.fromisoformat(self.best_before[:10])
